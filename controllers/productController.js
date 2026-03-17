@@ -29,12 +29,13 @@ const getProductById = (req, res) => {
 // POST add product
 const createProduct = (req, res) => {
   const newProduct = {
-    id: products.length + 1,
-    productName: req.body.productName,
-    price: req.body.price,
-    category: req.body.category,
-    stock: req.body.stock
-  };
+  id: products.length + 1,
+  productName: req.body.productName,
+  slug: req.body.productName.toLowerCase().replace(/\s+/g, "-"),
+  price: req.body.price,
+  category: req.body.category,
+  stock: req.body.stock
+};
 
   products.push(newProduct);
 
@@ -74,11 +75,26 @@ const deleteProduct = (req, res) => {
   res.json({ message: "Product deleted" });
 };
 
+// GET product by slug
+const getProductBySlug = (req, res) => {
+  const slug = req.params.slug;
+
+  const product = products.find(p => p.slug === slug);
+
+  if (!product) {
+    return res.json({ message: "Product not found" });
+  }
+
+  res.json(product);
+};
+
+
 module.exports = {
   getProducts,
   getProductById,
   createProduct,
   updateProduct,
   deleteProduct,
+  getProductBySlug,   // slug 
   products
 };
